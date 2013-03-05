@@ -20,19 +20,19 @@
 
 module Main where
 
-import Control.Monad(filterM,mapM)
+import Control.Monad (filterM)
 import System.Cmd (rawSystem)
 import System.Directory (doesDirectoryExist,getDirectoryContents)
 import System.Environment (getArgs)
 import System.Exit
-import System.IO
 
+main :: IO ()
 main = do
   -- capture single arg as a String
   [basedir] <- getArgs
   -- verification
   dirTest <- doesDirectoryExist basedir
-  if (dirTest == True)
+  if dirTest
     then do
       subdirs <- getDirectoryContents basedir
       -- filter subdirectories to only those who
@@ -41,9 +41,9 @@ main = do
       -- then runs the hasMeta filter.
       workspaces <- filterM hasMeta ( fullPaths basedir subdirs )
       -- iterate over those directories and perform update
-      mapM runUpdate workspaces
-      exitWith ExitSuccess
-    else do
+      mapM_ runUpdate workspaces
+      exitSuccess
+    else 
       putStrLn "not a directory"
 
 -- get directory contents as full paths
@@ -55,9 +55,8 @@ fullPaths basepath paths =
 
 -- check for .svn metadata directory
 hasMeta :: FilePath -> IO Bool
-hasMeta ( someDir ) = do
-  dirTest <- doesDirectoryExist( someDir ++ "/.svn" )
-  return dirTest
+hasMeta ( someDir ) =
+  doesDirectoryExist( someDir ++ "/.svn" )
 
 -- run 'svn up' on workspace directory
 runUpdate :: FilePath -> IO Bool
