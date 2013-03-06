@@ -48,8 +48,8 @@ main = do
 
 -- get directory contents as full paths
 fullPaths :: FilePath -> [FilePath] -> [FilePath]
-fullPaths basepath paths =
-  map (\x -> (basepath ++ "/" ++ x)) paths
+fullPaths basepath =
+  map (\x -> basepath ++ "/" ++ x)
   -- apply lambda expression to list, concatenating
   -- base path in front of each path
 
